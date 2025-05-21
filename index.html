@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Password Dog</title>
+  <style>
+    .password-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    input[type="password"] {
+      padding: 10px;
+      font-size: 16px;
+      width: 200px;
+    }
+
+    .dog-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin-top: 30px;
+      height: 120px;
+    }
+
+    .dog-part {
+      position: absolute;
+      height: 100px;
+      pointer-events: none;
+    }
+
+    .dog-head {
+      left: 0;
+      z-index: 2;
+    }
+
+    .dog-body {
+      left: 0;
+      transition: width 0.3s ease;
+      white-space: nowrap;
+      z-index: 1;
+    }
+
+    .dog-tail {
+      position: absolute;
+      z-index: 3;
+    }
+  </style>
+</head>
+<body>
+
+<div class="password-container">
+  <input type="password" id="passwordInput" placeholder="Enter password" oninput="updateDog()" />
+</div>
+
+<div class="dog-container">
+  <img src="head.svg" class="dog-part dog-head" />
+  <img src="body.svg" class="dog-part dog-body" id="dogBody" style="width: 100px;" />
+  <img src="tail.svg" class="dog-part dog-tail" id="dogTail" />
+</div>
+
+<script>
+  function updateDog() {
+    const password = document.getElementById('passwordInput').value;
+    const dogBody = document.getElementById('dogBody');
+    const dogTail = document.getElementById('dogTail');
+
+    // Update body width based on password length
+    let bodyWidth = 100 + password.length * 10;
+    if (bodyWidth > 300) bodyWidth = 300; // Max width
+    dogBody.style.width = bodyWidth + 'px';
+
+    // Position tail at the end of the body
+    const tailX = bodyWidth;
+    dogTail.style.left = tailX + 'px';
+
+    // Stop previous animation
+    if (window.tailAnimation) {
+      clearInterval(window.tailAnimation);
+      delete window.tailAnimation;
+    }
+
+    // Wag tail if password is longer than 8
+    if (password.length > 8) {
+      let angle = -10;
+      window.tailAnimation = setInterval(() => {
+        angle = angle === -10 ? 20 : -10;
+        dogTail.style.transform = `rotate(${angle}deg)`;
+      }, 100);
+    } else {
+      dogTail.style.transform = `rotate(-10deg)`;
+    }
+  }
+</script>
+
+</body>
+</html>
